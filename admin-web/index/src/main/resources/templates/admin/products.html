@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Quản lý sản phẩm</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            .product-img { width: 80px; 
+                height: auto; 
+                border-radius: 6px; 
+            }
+            .logo-img { 
+                width: 36px; 
+                height: auto; 
+                object-fit: cover; 
+                border-radius: 4px; 
+            }
+            .category-img { 
+                width: 40px; 
+                height: auto; 
+                object-fit: contain; 
+                margin-bottom: 4px; 
+            }
+            .table thead th { 
+                background-color: #f8f9fa; 
+            }
+            .filter-section { 
+                margin-bottom: 20px; 
+            }
+        </style>
+    </head>
+    <body class="container py-4">
+        <!-- HEADER -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <a href="/admin/dashboard" class="btn btn-outline-secondary">← Quay lại</a>
+            <h2 class="mb-0">Danh sách sản phẩm</h2>
+            <a href="/admin/products/add" class="btn btn-success">+ Thêm sản phẩm</a>
+        </div>
+
+        <!-- BỘ LỌC -->
+        <div class="row filter-section align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Lọc theo danh mục:</label>
+                <select id="categorySelect" class="form-select">
+                    <option value="">Tất cả</option>
+                    <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.title}"></option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Tìm theo tên:</label>
+                <input type="text" id="searchInput" class="form-control" placeholder="Nhập tên sản phẩm">
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100" onclick="fetchProducts()">Tìm</button>
+            </div>
+        </div>
+
+        <!-- BẢNG SẢN PHẨM -->
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center">
+                <thead class="table-light">
+                <tr>
+                    <th>Danh mục</th>
+                    <th>Logo</th>
+                    <th>Ảnh</th>
+                    <th>Tên</th>
+                    <th>Giá</th>
+                    <th>Đánh giá</th>
+                    <th>Kích cỡ</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody id="productTable"></tbody>
+            </table>
+        </div>
+
+        <!-- TRANG -->
+        <nav>
+            <ul class="pagination justify-content-center" id="pagination"></ul>
+        </nav>
+
+        <!-- SCRIPT -->
+        <script>
+            
+            let currentPage = 1;
+            const pageSize = 10;
+
+            async function fetchProducts(page = 1) {
+                currentPage = page;
+                const category = document.getElementById("categorySelect").value;
+                const search = document.getElementById("searchInput").value;
+                const url = `/admin/products/api?category=${category}&search=${search}&page=${page}&size=${pageSize}`;
+                const res = await fetch(url);
+                const products = await res.json();
+                const tbody = document.getElementById("productTable");
+                tbody.innerHTML = "";
+
+                if (products.length === 0) {
+                    tbody.innerHTML = "<tr><td colspan='7'>Không có sản phẩm phù hợp</td></tr>";
+                    document.getElementById("pagination").innerHTML = "";
+                    return;
+                }
+
+                products.forEach(item => {
+                    if (!item.id) {
+                        console.warn("Thiếu ID sản phẩm:", item);
+                        return;
+                    }
+                    const row = document.createElement("tr");
+                        row.innerHTML = `
+                                <td>
+                                    <img src="${item.categoryImg}" class="category-img"><br>
+                                    <small>${item.categoryName}</small>
+                                </td>
+                                <td>
+                                    <img src="${item.logo}" class="logo-img" alt="logo">
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-wrap gap-1 justify-content-center">
+                                        ${item.picUrl.map(url => `<img src="${url}" class="product-img" alt="pic">`).join('')}
+                                    </div>
+                                </td>
+                                <td>${item.title}</td>
+                                
+                                <td>${Number(item.price).toLocaleString('en-US')+ " VND"}</td>
+                                <td>${item.rating}</td>
+                                <td>
+                                    <ul class='list-unstyled mb-0'>
+                                        ${item.size.map(size => `<li>${size}</li>`).join('')}
+                                    </ul>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1" onclick="editProduct('${item.id}')">Sửa</button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteProduct('${item.id}')">Xóa</button>
+                                </td>
+                            `;
+
+                    tbody.appendChild(row);
+                });
+
+                renderPagination(products.length === pageSize);
+            }
+
+            function editProduct(id) {
+                console.log("Edit ID:", id);
+                if (!id || id === "null") {
+                    alert("Không tìm thấy ID sản phẩm!");
+                    return;
+                }
+                window.location.href = `/admin/products/edit/${id}`;
+            }
+
+            
+
+            async function deleteProduct(id) {
+                if (confirm("Bạn có chắc muốn xóa sản phẩm này?")) {
+                    const res = await fetch(`/admin/products/delete/${id}`, { method: 'DELETE' });
+                    if (res.ok) {
+                        alert("Đã xóa sản phẩm!");
+                        fetchProducts(currentPage);
+                    } else {
+                        alert("Xóa thất bại!");
+                    }
+                }
+            }
+
+            function renderPagination(hasNextPage) {
+                const pagination = document.getElementById("pagination");
+                pagination.innerHTML = "";
+
+                if (currentPage > 1) {
+                    pagination.innerHTML += `
+                        <li class="page-item">
+                            <a class="page-link" href="#" onclick="fetchProducts(${currentPage - 1})">«</a>
+                        </li>`;
+                }
+
+                pagination.innerHTML += `
+                    <li class="page-item active">
+                        <span class="page-link">${currentPage}</span>
+                    </li>`;
+
+                if (hasNextPage) {
+                    pagination.innerHTML += `
+                        <li class="page-item">
+                            <a class="page-link" href="#" onclick="fetchProducts(${currentPage + 1})">»</a>
+                        </li>`;
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                fetchProducts();
+                document.getElementById("categorySelect").addEventListener("change", () => fetchProducts(1));
+            });
+        </script>
+    </body>
+</html>

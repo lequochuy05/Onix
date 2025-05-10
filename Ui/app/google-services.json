@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "211380079737",
+    "firebase_url": "https://cuoiki1-25-default-rtdb.firebaseio.com",
+    "project_id": "cuoiki1-25",
+    "storage_bucket": "cuoiki1-25.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211380079737:android:604ac6c281bb5fe49798a8",
+        "android_client_info": {
+          "package_name": "com.example.shop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "211380079737-d8avpdf4fcmsuhb1a4fes7h87832314g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.shop",
+            "certificate_hash": "53988aa8c63f4040448a7562dc1b7fd7050270e1"
+          }
+        },
+        {
+          "client_id": "211380079737-qfjdcs0r7j45d6kupsd1odsq2cv24656.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6HrPzDeHVBs80jPP6rxT7A-j0CZ8bUsg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "211380079737-qfjdcs0r7j45d6kupsd1odsq2cv24656.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

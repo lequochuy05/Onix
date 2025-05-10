@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--oppo screen-->
+<resources>
+
+
+
+	<dimen name="padding">12dp</dimen>
+ 	<dimen name="margin">14dp</dimen>
+	<dimen name="margin_top">10dp</dimen>
+	<dimen name="margin_bottom">10dp</dimen>
+	<dimen name="margin_start">14dp</dimen>
+	<dimen name="margin_end">14dp</dimen>
+	<dimen name="marginVerticall">12dp</dimen>
+	<dimen name="marginHorizontal">12dp</dimen>
+	<dimen name="paddingVertical">6dp</dimen>
+	<dimen name="paddingHorizontal">6dp</dimen>
+
+	<dimen name="text_size_large">36sp</dimen>
+	<dimen name="text_size_medium">14sp</dimen>
+	<dimen name="text_size_small">12sp</dimen>
+
+<!--image-->
+	<dimen name="width_img">70dp</dimen>
+	<dimen name="height_img">70dp</dimen>
+
+
+<!--Login-->
+	<dimen name="lg_img_height">290dp</dimen>
+	<dimen name="lg_et_height">50dp</dimen>
+
+<!--item-->
+	<dimen name="item_height">135dp</dimen>
+	<dimen name="et_mwidth">160dp</dimen>
+	<dimen name="width_logo">20dp</dimen>
+	<dimen name="height_logo">20dp</dimen>
+	<dimen name="item_pic_width">100dp</dimen>
+
+
+<!--Dashboard-->
+	<dimen name="db_intro_height">260dp</dimen>
+	<dimen name="db_intro_fm_height">220dp</dimen>
+	<dimen name="db_intro_pic_width">180dp</dimen>
+	<dimen name="db_intro_pic_height">160dp</dimen>
+	<dimen name="db_picCat_width">50dp</dimen>
+	<dimen name="db_picCat_height">50dp</dimen>
+
+<!--Cart-->
+	<dimen name="cart_recycler_height">300dp</dimen>
+</resources>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chỉnh sửa sản phẩm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        .preview-img {
+            width: 100px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body class="container py-5">
+
+    <h2 class="text-warning mb-4">✏️ Chỉnh sửa sản phẩm</h2>
+    
+    <form id="editForm" onsubmit="submitEditForm(event)" class="bg-light p-4 rounded shadow-sm">
+        <input type="hidden" id="productId" th:value="${productId}" />
+    
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label class="form-label">Tên sản phẩm</label>
+                <input type="text" class="form-control" id="title" th:value="${product.title}" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Danh mục</label>
+                <select class="form-select" id="categoryId" required>
+                    <option value="0" th:selected="${product.categoryId == '0'}">Sneakers</option>
+                    <option value="1" th:selected="${product.categoryId == '1'}">High Hill</option>
+                    <option value="2" th:selected="${product.categoryId == '2'}">Sandal</option>
+                    <option value="3" th:selected="${product.categoryId == '3'}">Boot</option>
+                    <option value="4" th:selected="${product.categoryId == '4'}">Oxford</option>
+                    <option value="5" th:selected="${product.categoryId == '5'}">Loafers</option>
+                </select>
+            </div>
+        </div>
+    
+        <div class="row g-3 mb-3">
+            <div class="col-md-4">
+                <label class="form-label">Giá (VND)</label>
+                <input type="number" class="form-control" id="price" th:value="${product.price}" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Đánh giá (0 - 5)</label>
+                <input type="number" step="0.1" min="0" max="5" class="form-control" id="rating" th:value="${product.rating}" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Kích cỡ (phân cách dấu phẩy)</label>
+                <input type="text" class="form-control" id="size" th:value="${#strings.listJoin(product.size, ',')}" placeholder="38,39,40">
+            </div>
+        </div>
+    
+        <div class="mb-3">
+            <label class="form-label">Mô tả</label>
+            <textarea class="form-control" id="description" rows="3" th:text="${product.description}"></textarea>
+        </div>
+    
+        <div class="form-check mb-4">
+            <input class="form-check-input" type="checkbox" id="isBestSeller">
+            <label class="form-check-label fw-medium" for="isBestSeller">
+                Đánh dấu là sản phẩm <strong>bán chạy</strong>
+            </label>
+        </div>
+    
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <label class="form-label">Logo sản phẩm</label>
+                <input type="file" class="form-control" id="logoInput">
+                <div class="mt-2 position-relative" id="logoPreview" th:if="${product.logo}">
+                    <img th:src="${product.logo}" id="logoImage" class="preview-img">
+                    <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" onclick="removeLogo()">&times;</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Ảnh chi tiết sản phẩm</label>
+                <input type="file" class="form-control" id="newImageInput" multiple>
+                <div class="d-flex flex-wrap gap-2 mt-2" id="imageList"></div>
+            </div>
+        </div>
+    
+        <div class="text-end">
+            <button type="submit" class="btn btn-warning px-4">Cập nhật</button>
+            <a href="javascript:history.back()" class="btn btn-secondary ms-2">Huỷ</a>
+        </div>
+    </form>
+
+<script th:inline="javascript">
+    const isBestSeller = /*[[${product.bestSeller}]]*/ false;
+    const productLogo = /*[[${product.logo}]]*/ '';
+    let imageUrls = /*[[${product.picUrl}]]*/ '[]';
+    imageUrls = typeof imageUrls === 'string' ? JSON.parse(imageUrls) : (imageUrls || []);
+    let deletedImages = [];
+    let deletedLogo = false;
+    let currentLogo = productLogo;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        renderImages();
+        document.getElementById("isBestSeller").checked = isBestSeller === true;
+
+        if (currentLogo) {
+            const img = document.getElementById("logoImage");
+            if (img) {
+                img.src = currentLogo;
+                img.style.display = "block";
+            }
+        }
+    });
+
+
+    function renderImages() {
+        const container = document.getElementById("imageList");
+        container.innerHTML = "";
+        imageUrls.forEach((url, i) => {
+            const div = document.createElement("div");
+            div.classList.add("position-relative");
+            div.innerHTML = `
+                <img src="${url}" class="rounded" style="width:100px;height:80px;object-fit:cover;">
+                <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0" onclick="removeImage(${i})">&times;</button>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function removeImage(index) {
+        deletedImages.push(imageUrls[index]);
+        imageUrls.splice(index, 1);
+        renderImages();
+    }
+
+    function removeLogo() {
+        deletedLogo = true;
+        currentLogo = "";
+        document.getElementById("logoPreview").innerHTML = "";
+    }
+
+    async function uploadLogo() {
+        const file = document.getElementById("logoInput").files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const res = await axios.post("/cloudinary/uploadLogo", formData);
+            const newUrl = res.data;
+
+            // Nếu có logo cũ khác logo mới -> xóa Cloudinary
+            if (productLogo && productLogo !== newUrl) {
+                await deleteImageFromCloudinary(productLogo);
+            }
+
+            currentLogo = newUrl;
+            deletedLogo = false;
+
+            document.getElementById("logoPreview").innerHTML = `
+                <img src="${currentLogo}" class="rounded" style="width:100px;height:80px;object-fit:cover;">
+                <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0" onclick="removeLogo()">&times;</button>
+            `;
+        } catch (err) {
+            console.error("Upload logo thất bại:", err);
+            alert("Không thể upload logo!");
+        }
+    }
+
+    async function uploadNewImages() {
+        const files = document.getElementById("newImageInput").files;
+        if (!files.length) return;
+
+        for (let file of files) {
+            const formData = new FormData();
+            formData.append("file", file);
+            try {
+                const res = await axios.post("/cloudinary/uploadItem", formData);
+                imageUrls.push(res.data);
+            } catch (err) {
+                console.error("Upload ảnh chi tiết thất bại:", err);
+            }
+        }
+
+        renderImages();
+        document.getElementById("newImageInput").value = "";
+    }
+
+    async function submitEditForm(e) {
+        e.preventDefault();
+        const id = document.getElementById("productId").value;
+        const sizeArr = document.getElementById("size").value.split(',').map(s => s.trim());
+
+        if (deletedLogo && productLogo && productLogo !== currentLogo) {
+            await deleteImageFromCloudinary(productLogo);
+        }
+
+        for (let url of deletedImages) {
+            await deleteImageFromCloudinary(url);
+        }
+
+        const product = {
+            title: document.getElementById("title").value,
+            description: document.getElementById("description").value,
+            price: parseFloat(document.getElementById("price").value),
+            rating: parseFloat(document.getElementById("rating").value),
+            size: sizeArr,
+            logo: currentLogo,
+            picUrl: imageUrls,
+            categoryId: document.getElementById("categoryId").value,
+            bestSeller: document.getElementById("isBestSeller").checked
+        };
+
+        try {
+            const res = await axios.post(`/admin/products/edit/${id}`, product);
+            if (res.data === 'success') {
+                alert("Cập nhật thành công!");
+                window.location.href = document.referrer || "/admin/products";
+            } else {
+                alert("Lỗi cập nhật!");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Có lỗi xảy ra.");
+        }
+    }
+
+    async function deleteImageFromCloudinary(imageUrl) {
+        const publicId = extractPublicId(imageUrl);
+        if (!publicId) {
+            console.warn("Không thể tách publicId từ URL:", imageUrl);
+            return;
+        }
+
+        try {
+            await axios.post("/cloudinary/delete", { publicId });
+        } catch (err) {
+            console.error("Lỗi xóa ảnh:", err);
+        }
+    }
+
+
+    function extractPublicId(url) {
+        try {
+            const uploadIndex = url.indexOf("/upload/");
+            if (uploadIndex === -1) return null;
+
+            let path = url.substring(uploadIndex + 8); // sau /upload/
+            const parts = path.split("/");
+
+            // Bỏ version nếu có (v1700000000)
+            if (parts[0].startsWith("v")) {
+                parts.shift();
+            }
+
+            // Bỏ phần mở rộng .jpg/.png
+            const last = parts.pop();
+            const nameWithoutExt = last.substring(0, last.lastIndexOf("."));
+            parts.push(nameWithoutExt);
+
+            return parts.join("/");
+        } catch (e) {
+            console.error("Lỗi extract publicId:", e);
+            return null;
+        }
+    }
+
+</script>
+
+</body>
+</html>

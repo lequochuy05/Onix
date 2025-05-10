@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý người dùng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 0 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="container py-5">
+
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <a href="/admin/dashboard" class="btn btn-outline-secondary">← Quay lại</a>
+    <h2 class="text-center flex-grow-1">Danh sách người dùng</h2>
+    <a href="/admin/products/add" class="btn btn-success">+ Thêm tài khoản</a>
+</div>
+
+<!-- TÌM KIẾM & BỘ LỌC -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <input type="text" id="searchInput" class="form-control" placeholder="Tìm theo tên, email, SĐT..." onkeyup="filterUsers()" th:value="${search}">
+
+    </div>
+    <div class="col-md-3">
+        <select id="verifyFilter" class="form-select" onchange="filterUsers()">
+            <option value="">-- Lọc xác thực email --</option>
+            <option value="true" th:selected="${verified == 'verified'}">✔ Đã xác thực</option>
+            <option value="false" th:selected="${verified == 'unverified'}">✘ Chưa xác thực</option>
+        </select>
+    </div>
+</div>
+
+<!-- BẢNG NGƯỜI DÙNG -->
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle text-center" id="userTable">
+        <thead class="table-dark">
+        <tr>
+            <th>Ảnh</th>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>SĐT</th>
+            <th>Ngày sinh</th>
+            <th>Địa chỉ</th>
+            <th>Ngày tạo</th>
+            <th>Xác thực</th>
+            <th>Trạng thái</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:if="${#lists.isEmpty(users)}">
+                <td colspan="8" class="text-center text-muted py-4">Không tìm thấy dữ liệu</td>
+            </tr>
+        <tr th:each="user : ${users}">
+            
+            <td>
+                <img th:src="'data:image/jpeg;base64,' + ${user.img}" class="avatar" alt="avatar"/>
+            </td>
+            <td th:text="${user.firstName + ' ' + user.lastName}" class="name-cell">Họ tên</td>
+            <td th:text="${user.email}" class="email-cell">Email</td>
+            <td th:text="${user.phoneNumber != null and !user.phoneNumber.isEmpty() ? user.phoneNumber : 'Không có'}" class="phone-cell">SĐT</td>
+            <td th:text="${user.dob != null and !user.dob.isEmpty() ? user.dob : 'Không có'}">Ngày sinh</td>
+            <td th:text="${user.address != null and !user.address.isEmpty() ? user.address[0] : 'Không có'}">Địa chỉ</td>
+
+            <td th:text="${#dates.format(user.creationTime, 'dd/MM/yyyy HH:mm')}">Ngày tạo</td>
+            <td class="verify-cell">
+                <span th:if="${user.emailVerified}" class="text-success fw-bold">✔</span>
+                <span th:if="${!user.emailVerified}" class="text-danger fw-bold">✘</span>
+                <span th:text="${user.emailVerified}" class="d-none actual-verify-value">true</span>
+            </td>
+            <td>
+                <form th:action="@{'/admin/users/ban/' + ${user.id}}" method="post">
+                    <input type="hidden" name="ban" th:value="${!user.isBanned}" />
+                    <button type="submit"
+                            class="btn btn-sm px-3 fw-bold"
+                            th:classappend="${user.isBanned ? 'btn-outline-danger' : 'btn-outline-success'}"
+                            th:text="${user.isBanned ? 'Đã cấm' : 'Hoạt động'}"
+                            th:attr="title=${user.isBanned ? 'Click để gỡ cấm' : 'Click để cấm tài khoản'}"
+                            style="cursor: pointer;">
+                    </button>
+                </form>
+            </td>
+
+            
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- PHÂN TRANG SERVER -->
+<nav th:if="${totalPages > 1}" class="mt-4">
+    <ul class="pagination justify-content-center">
+        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+            <a class="page-link" th:href="@{'/admin/users'(page=${currentPage - 1}, search=${search}, verified=${verified})}">«</a>
+        </li>
+        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+            th:classappend="${i == currentPage} ? 'active'">
+            <a class="page-link" th:href="@{'/admin/users'(page=${i}, search=${search}, verified=${verified})}"
+               th:text="${i}">1</a>
+        </li>
+        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+            <a class="page-link" th:href="@{'/admin/users'(page=${currentPage + 1}, search=${search}, verified=${verified})}">»</a>
+        </li>
+    </ul>
+</nav>
+
+<script>
+    function filterUsers() {
+        const search = document.getElementById("searchInput").value;
+        const verifiedValue = document.getElementById("verifyFilter").value;
+
+        let verifiedParam = "";
+        if (verifiedValue === "true") verifiedParam = "verified";
+        else if (verifiedValue === "false") verifiedParam = "unverified";
+
+        const query = new URLSearchParams({
+            search: search,
+            verified: verifiedParam,
+            page: 1 // Khi filter thì reset về trang 1
+        });
+
+        window.location.href = `/admin/users?${query.toString()}`;
+    }
+</script>
+
+</body>
+</html>

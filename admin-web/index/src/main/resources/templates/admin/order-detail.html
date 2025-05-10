@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết đơn hàng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .product-img {
+            width: 77px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="container py-4">
+
+    <!-- Nút quay lại -->
+    <div class="mb-4">
+        <a href="/admin/orders" class="btn btn-outline-secondary">← Quay lại danh sách</a>
+    </div>
+
+    <!-- Thông tin đơn hàng -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Chi tiết đơn hàng</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Mã đơn hàng:</strong> <span th:text="${order.orderId}">#123456</span></p>
+            <p><strong>Người đặt:</strong> <span th:text="${order.userFirstName + ' ' + order.userLastName}">Nguyễn Văn A</span></p>
+            <p><strong>Ngày đặt:</strong> <span th:text="${order.orderDate}">04/04/2025</span></p>
+            <p><strong>Địa chỉ giao hàng:</strong> <span th:text="${order.deliveryAddress}">Địa chỉ</span></p>
+            <p><strong>Tổng tiền:</strong>
+                <span th:text="${#numbers.formatDecimal(order.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' VND'">1143536 VND</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Danh sách sản phẩm -->
+    <h5 class="mb-3">Danh sách sản phẩm</h5>
+    <div class="table-responsive">
+        <table class="table table-bordered text-center align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Ảnh</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Giá</th>
+                    <th>Size</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${order.items}">
+                    <td><img th:src="${item.picUrl[0]}" class="product-img" alt="Ảnh sản phẩm"></td>
+                    <td th:text="${item.itemName}">Tên sản phẩm</td>
+                    <td th:text="${item.itemQuantity}">2</td>
+                    <td th:text="${#numbers.formatDecimal(item.itemPrice, 0, 'COMMA', 0, 'POINT')} + ' VND'">555,655 VND</td>
+                    <td th:text="${item.selectedSize}">41</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Cập nhật trạng thái -->
+    <div class="card mt-4">
+        <div class="card-header bg-light">
+            <strong>Cập nhật trạng thái đơn hàng</strong>
+        </div>
+        <div class="card-body">
+            <form method="post" th:action="@{'/admin/orders/update-status'}" class="d-flex align-items-center gap-3">
+                <input type="hidden" name="orderId" th:value="${order.orderId}">
+                <select name="status" class="form-select w-auto">
+                    <option th:selected="${order.orderStatus == 'Chờ xác nhận'}">Chờ xác nhận</option>
+                    <option th:selected="${order.orderStatus == 'Đã xác nhận'}">Đang xử lý</option>
+                    <option th:selected="${order.orderStatus == 'Đang vận chuyển'}">Đang vận chuyển</option>
+                    <option th:selected="${order.orderStatus == 'Đã nhận'}">Đã nhận</option>
+                    <option th:selected="${order.orderStatus == 'Đã hủy'}">Đã hủy</option>
+                </select>
+                <button type="submit" class="btn btn-success">Lưu thay đổi</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

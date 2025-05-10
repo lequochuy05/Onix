@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--default screen-->
+<resources>
+
+	<dimen name="padding">16dp</dimen>
+	<dimen name="margin">16dp</dimen>
+	<dimen name="margin_top">12dp</dimen>
+	<dimen name="margin_bottom">12dp</dimen>
+	<dimen name="margin_start">16dp</dimen>
+	<dimen name="margin_end">16dp</dimen>
+	<dimen name="marginVerticall">16dp</dimen>
+	<dimen name="marginHorizontal">16dp</dimen>
+	<dimen name="paddingVertical">8dp</dimen>
+	<dimen name="paddingHorizontal">8dp</dimen>
+
+	<dimen name="text_size_large">50sp</dimen>
+	<dimen name="text_size_medium">20sp</dimen>
+	<dimen name="text_size_small">16sp</dimen>
+
+<!--image-->
+	<dimen name="width_img">90dp</dimen>
+	<dimen name="height_img">90dp</dimen>
+
+<!--Login-->
+	<dimen name="lg_img_height">360dp</dimen>
+	<dimen name="lg_et_height">60dp</dimen>
+
+<!--item-->
+	<dimen name="et_mwidth">200dp</dimen>
+	<dimen name="width_logo">24dp</dimen>
+	<dimen name="height_logo">24dp</dimen>
+	<dimen name="item_pic_width">160dp</dimen>
+	<dimen name="item_height">150dp</dimen>
+
+<!--Dashboard-->
+	<dimen name="db_intro_height">300dp</dimen>
+	<dimen name="db_intro_fm_height">260dp</dimen>
+	<dimen name="db_intro_pic_width">200dp</dimen>
+	<dimen name="db_intro_pic_height">180dp</dimen>
+	<dimen name="db_picCat_width">66dp</dimen>
+	<dimen name="db_picCat_height">66dp</dimen>
+
+<!--Cart-->
+	<dimen name="cart_recycler_height">505dp</dimen>
+
+
+</resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:ignore="UseCompoundDrawables">
+
+    <ImageView
+        android:id="@+id/picCat"
+        android:layout_width="@dimen/db_picCat_width"
+        android:layout_height="@dimen/db_picCat_height"
+        android:padding="12dp"
+        android:layout_marginHorizontal="@dimen/marginHorizontal"
+        android:background="@drawable/grey_circle_bg" />
+
+    <TextView
+        android:id="@+id/titleCat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="title"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_small"
+        android:layout_marginTop="8dp"
+        android:textStyle="bold"
+        android:textAlignment="center"/>
+</LinearLayout>

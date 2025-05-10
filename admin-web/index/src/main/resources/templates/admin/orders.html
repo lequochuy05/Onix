@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý đơn hàng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .order-card {
+            border-left: 4px solid #0d6efd;
+            transition: all 0.2s ease;
+        }
+        .order-card:hover {
+            box-shadow: 0 0 10px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+        .img-thumb {
+            width: 70px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body class="container py-5">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold"><i class="bi bi-box-seam"></i> Quản lý đơn hàng</h3>
+        <a href="/admin/dashboard" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Quay lại</a>
+    </div>
+
+    <!-- Form lọc -->
+    <form class="row row-cols-lg-auto g-3 align-items-center mb-4" method="get" th:action="@{/admin/orders}">
+        <div class="col-12">
+            <input type="text" name="search" class="form-control" placeholder="Tên hoặc userId" th:value="${search}">
+        </div>
+        <div class="col-12">
+            <select name="status" class="form-select">
+                <option value="">-- Tất cả trạng thái --</option>
+                <option value="Chờ xác nhận" th:selected="${status == 'Chờ xác nhận'}">Chờ xác nhận</option>
+                <option value="Đang xử lý" th:selected="${status == 'Đang xử lý'}">Đang xử lý</option>
+                <option value="Đang vận chuyển" th:selected="${status == 'Đang vận chuyển'}">Đang vận chuyển</option>
+                <option value="Đã nhận" th:selected="${status == 'Đã nhận'}">Đã nhận</option>
+                <option value="Đã hủy" th:selected="${status == 'Đã hủy'}">Đã hủy</option>
+            </select>
+        </div>
+        <div class="col-12 ">
+            <input type="text" name="dateFrom" class="form-control" placeholder="Từ ngày" th:value="${dateFrom}">
+        </div>
+        <div class="col-12">
+            <input type="text" name="dateTo" class="form-control" placeholder="Đến ngày" th:value="${dateTo}">
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Tìm kiếm</button>
+        </div>
+    </form>
+
+    <!-- Số lượng hiển thị -->
+    <p class="text-muted mb-4" th:if="${orders != null}" th:text="'Đang hiển thị ' + ${orders.size()} + ' đơn hàng'"></p>
+
+    <!-- Danh sách đơn -->
+    <div class="row gy-4" th:if="${orders != null}">
+        <div class="col-12" th:each="order : ${orders}">
+            <div class="card p-3 order-card">
+                <div class="row align-items-center">
+                    <div class="col-md-1 text-center d-none d-md-block">
+                        <img th:src="${order.items[0].picUrl[0]}" class="img-thumb" alt="ảnh sản phẩm">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="fw-semibold text-primary mb-1">
+                            Mã đơn: <span th:text="${order.orderId}">#123</span>
+                        </div>
+                        <div><strong>Khách:</strong> <span th:text="${order.userFirstName + ' ' + order.userLastName}">Tên</span></div>
+                        <div><strong>Ngày đặt:</strong> <span th:text="${order.orderDate}">04/04/2025</span></div>
+                        <div><strong>Địa chỉ giao:</strong> <span th:text="${order.deliveryAddress}">Địa chỉ</span></div>
+                        <div>
+                            <strong>Trạng thái:</strong>
+                            <span class="badge"
+                                  th:classappend="
+                                    ${order.orderStatus} == 'Chờ xác nhận' ? 'bg-warning text-dark' :
+                                    (${order.orderStatus} == 'Đang xử lý' ? 'bg-primary' :
+                                    (${order.orderStatus} == 'Đang vận chuyển' ? 'bg-info text-dark' :
+                                    (${order.orderStatus} == 'Đã nhận' ? 'bg-success' :
+                                    (${order.orderStatus} == 'Đã hủy' ? 'bg-danger' : 'bg-secondary'))))"
+                                  th:text="${order.orderStatus}">Trạng thái</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-md-end text-start mt-3 mt-md-0">
+                        <div class="mb-2">
+                            <strong>Tổng tiền:</strong>
+                            <span th:text="${#numbers.formatDecimal(order.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' VND'">0</span>
+                        </div>
+                        <a class="btn btn-sm btn-outline-primary" th:href="@{'/admin/orders/' + ${order.orderId}}">
+                            <i class="bi bi-eye"></i> Xem chi tiết
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nếu không có đơn -->
+    <div th:if="${orders == null or orders.isEmpty()}" class="alert alert-info text-center">
+        Không có đơn hàng nào phù hợp.
+    </div>
+
+    <!-- Phân trang -->
+    <nav th:if="${totalPages > 1}" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/orders(page=${currentPage - 1}, search=${search}, status=${status}, dateFrom=${dateFrom}, dateTo=${dateTo})}">«</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/admin/orders(page=${i}, search=${search}, status=${status}, dateFrom=${dateFrom}, dateTo=${dateTo})}"
+                   th:text="${i}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/orders(page=${currentPage + 1}, search=${search}, status=${status}, dateFrom=${dateFrom}, dateTo=${dateTo})}">»</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        flatpickr("input[name='dateFrom']", {
+            dateFormat: "d/m/Y",
+            allowInput: true,
+            static: true,
+            position: "auto"
+        });
+        flatpickr("input[name='dateTo']", {
+            dateFormat: "d/m/Y",
+            allowInput: true,
+            static: true,
+            position: "auto"
+        });
+    </script>
+</body>
+</html>

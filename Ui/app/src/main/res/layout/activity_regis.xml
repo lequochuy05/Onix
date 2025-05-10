@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
+    android:background="@color/blue">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="50dp">
+
+        <ImageView
+            android:id="@+id/imageViewLogo"
+            android:layout_width="228dp"
+            android:layout_height="223dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_regis" />
+
+        <TextView
+            android:id="@+id/textTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin"
+            android:fontFamily="@font/freescript"
+            android:layout_gravity="center"
+            android:text="Hi... Welcome to Shop "
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_large" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="@dimen/margin_start"
+            android:layout_marginEnd="@dimen/margin_end"
+            android:layout_marginBottom="@dimen/margin_bottom">
+
+            <EditText
+                android:id="@+id/txtFirstName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:background="@drawable/login_edittext_bg"
+                android:ems="10"
+                android:hint="Tên"
+                android:inputType="text"
+                android:padding="@dimen/padding"
+                android:textColor="@color/black"/>
+
+            <EditText
+                android:id="@+id/txtLastName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/login_edittext_bg"
+                android:ems="10"
+                android:hint="Họ"
+                android:inputType="text"
+                android:padding="@dimen/padding"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_start"
+            android:layout_marginEnd="@dimen/margin_start"
+            android:orientation="vertical"
+            >
+            <EditText
+                android:id="@+id/txtPhoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/lg_et_height"
+                android:background="@drawable/login_edittext_bg"
+                android:hint="Số điện thoại"
+                android:inputType="phone"
+                android:padding="@dimen/padding"
+                android:textColor="@color/black" />
+
+            <EditText
+                android:id="@+id/txtEmail"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/lg_et_height"
+                android:layout_marginTop="@dimen/margin_top"
+                android:background="@drawable/login_edittext_bg"
+                android:ems="10"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/black"
+                android:padding="@dimen/padding"/>
+
+            <EditText
+                android:id="@+id/txtPassword"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/lg_et_height"
+                android:layout_marginTop="@dimen/margin_top"
+                android:background="@drawable/login_edittext_bg"
+                android:ems="10"
+                android:hint="Mật khẩu"
+                android:inputType="textPassword"
+                android:padding="@dimen/padding"
+                android:textColor="@color/black" />
+
+            <EditText
+                android:id="@+id/txtConfirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/lg_et_height"
+                android:layout_marginTop="@dimen/margin_top"
+                android:background="@drawable/login_edittext_bg"
+                android:ems="10"
+                android:hint="Nhập lại mật khẩu"
+                android:inputType="textPassword"
+                android:padding="@dimen/padding"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSignup"
+            style="@android:style/Widget.Button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="@dimen/padding"
+            android:layout_margin="@dimen/margin"
+            android:background="@drawable/orange_bg"
+            android:gravity="center"
+            android:text="Đăng kí"
+            android:textSize="@dimen/text_size_medium" />
+
+        <TextView
+            android:id="@+id/tvLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_top"
+            android:text="@string/regis_login"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_small"
+            android:gravity="center"/>
+
+
+    </LinearLayout>
+</ScrollView>

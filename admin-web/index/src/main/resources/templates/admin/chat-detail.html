@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chat với người dùng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        #chat-box {
+            height: 80vh;
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+       <!-- Slide-bar -->
+        <div class="col-4 border-end" style="height: 100vh; overflow-y: auto;">
+            <a href="/admin/dashboard" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Quay lại</a>
+            <div class="d-flex justify-content-between align-items-center m2-4">
+                <h4 class="mt-3 ms-3">Chats</h4>
+                <div>
+                    <a href="#" class="text-dark me-3"><i class="bi bi-three-dots fs-4"></i></a>
+                    <a href="#" class="text-dark"><i class="bi bi-pencil-square fs-4"></i></a>
+                </div>
+            </div>
+            <div class="p-3 position-relative">
+                <i class="bi bi-search position-absolute top-50 start-10 translate-middle-y ms-3 text-muted"></i>
+                <input type="text" class="form-control ps-5" id="searchInput" placeholder="Tìm kiếm...">
+            </div>
+
+             <!-- Danh sách người dùng chat -->
+            <ul class="list-group list-group-flush">
+                <li th:each="entry : ${users}" class="list-group-item">
+                    <a th:href="@{'/admin/chats/' + ${entry.key}}" class="text-decoration-none text-dark">
+                        <img th:src="'data:image/jpeg;base64,' + ${entry.value.img}" width="40" height="45" class="rounded-circle me-3" alt="Avatar">
+                        <span th:text="${entry.value.firstName + ' ' + entry.value.lastName}">Tên</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Cửa sổ chat -->
+        <div class="col-8 d-flex flex-column justify-content-between" style="height: 100vh;">
+            <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                <!-- Thông tin user -->
+                <div class="d-flex align-items-center">
+                    <img th:src="'data:image/jpeg;base64,' + ${userImg}" width="40" height="40" class="rounded-circle me-3" alt="Avatar">
+                    <div>
+                        <h5 class="mb-0" th:text="${userName}">Tên người dùng</h5>
+                        <small class="text-muted">Active 4m ago</small>
+                    </div>
+                </div>
+            
+                <!-- Các icon chức năng -->
+                <div class="d-flex align-items-center">
+                    <a href="#" class="text-decoration-none text-primary me-3">
+                        <i class="bi bi-telephone-fill fs-5"></i>
+                    </a>
+                    <a href="#" class="text-decoration-none text-primary me-3">
+                        <i class="bi bi-camera-video-fill fs-5"></i>
+                    </a>
+                    <a href="#" class="text-decoration-none text-primary">
+                        <i class="bi bi-info-circle-fill fs-5"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex-grow-1 p-3" id="chat-box">
+                <div th:each="msg : ${messages}">
+
+                    <!-- Tin nhắn của người dùng -->
+                    <div th:if="${msg != null and msg.user}"> 
+                        <div class="text-start mb-2">
+                            <div class="d-inline-block p-2 bg-light rounded">
+                                <span th:text="${msg.message}">[trống]</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tin nhắn của admin -->
+                    <div th:if="${msg != null and !msg.user}">
+                        <div class="text-end mb-2">
+                            <div class="d-inline-block p-2 bg-primary text-white rounded">
+                                <span th:text="${msg.message}">[trống]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form nhập tin nhắn -->
+            <form id="chatForm" class="p-3 border-top d-flex align-items-center bg-light position-relative">
+
+                <!-- nút cộng hiển thị danh sách popup-->
+                <div id="plusButton" class="d-flex align-items-center me-2">
+                    <a href="#" id="plusIcon" class="btn btn-light rounded-circle p-2">
+                        <i class="bi bi-plus fs-4 text-primary"></i>
+                    </a>
+                </div>
+            
+                <!-- Popup menu -->
+                <div id="plusMenu" class="card p-2 position-absolute shadow-sm" style="top: -220%; left: 10px; display: none; min-width: 200px;">
+                    <a href="#" class="d-flex align-items-center text-dark py-1">
+                        <i class="bi bi-mic me-2 text-primary"></i> Send a voice clip
+                    </a>
+                    <a href="#" class="d-flex align-items-center text-dark py-1">
+                        <i class="bi bi-stickies me-2 text-primary"></i> Choose a sticker
+                    </a>
+                    <a href="#" class="d-flex align-items-center text-dark py-1">
+                        <i class="bi bi-gift me-2 text-primary"></i> Choose a GIF
+                    </a>
+                    <a href="#" class="d-flex align-items-center text-dark py-1">
+                        <i class="bi bi-image me-2 text-primary"></i> Attach a file
+                    </a>
+                </div>
+            
+                <!-- Nhập tin nhắn -->
+                <div class="flex-grow-1 position-relative">
+                    <input type="text" id="messageInput" name="message" class="form-control rounded-pill ps-4 pe-5" placeholder="Aa" required style="background-color: #f0f2f5;">
+                    <a href="#" class="position-absolute end-0 top-50 translate-middle-y me-3 text-primary">
+                        <i class="bi bi-emoji-smile fs-5"></i>
+                    </a>
+                </div>
+            
+                <!-- nút like / gửi -->
+                <div class="ms-2 d-flex align-items-center">
+                    <button id="likeButton" type="button" class="btn btn-light rounded-circle p-2 me-2">
+                        <i class="bi bi-hand-thumbs-up-fill fs-5 text-primary"></i>
+                    </button>
+            
+                    <button id="sendButton" type="submit" class="btn btn-light rounded-circle p-2" style="display: none;">
+                        <i class="bi bi-send-fill fs-5 text-primary"></i>
+                    </button>
+                </div>
+            
+            </form>
+            
+            
+        </div>
+    </div>
+</div>
+
+
+<script th:inline="javascript">
+    const userId = /*[[${userId}]]*/ ''; // Lấy userId từ backend 
+    const chatForm = document.getElementById('chatForm');
+    const chatBox = document.getElementById('chat-box');
+    const messageInput = document.getElementById('messageInput');
+    const plusButton = document.getElementById('plusButton');
+    const likeButton = document.getElementById('likeButton');
+    const sendButton = document.getElementById('sendButton');
+    const plusIcon = document.getElementById('plusIcon');
+    const plusMenu = document.getElementById('plusMenu');
+
+    // Auto scroll xuống khi load
+    window.onload = function() {
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Gửi tin nhắn từ admin bằng fetch
+    chatForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const message = messageInput.value.trim();
+        if (message === "") return;
+
+        // Gửi tin nhắn đến server 
+        fetch('/admin/chats/' + userId + '/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ message })
+        }).then(response => {
+            // Kiểm tra phản hồi từ server
+            if (response.ok) {
+                const newMsg = document.createElement('div');
+                newMsg.className = 'text-end mb-2';
+                newMsg.innerHTML = `
+                    <div class="d-inline-block p-2 bg-primary text-white rounded">
+                        ${message}
+                    </div>
+                `;
+                chatBox.appendChild(newMsg);
+
+                // Reset input và nút
+                messageInput.value = "";
+                plusButton.style.display = 'flex';
+                likeButton.style.display = 'inline-block';
+                sendButton.style.display = 'none';
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }).catch(err => console.error('Send error', err));
+    });
+
+    // Ẩn/hiện nút plus / like / send
+    messageInput.addEventListener('input', function () {
+        if (this.value.trim() === "") {
+            plusButton.style.display = 'flex';
+            likeButton.style.display = 'inline-block';
+            sendButton.style.display = 'none';
+        } else {
+            plusButton.style.display = 'none';
+            likeButton.style.display = 'none';
+            sendButton.style.display = 'inline-block';
+        }
+    });
+
+    // Toggle popup plus
+    plusIcon.addEventListener('click', function (e) {
+        e.preventDefault();
+        plusMenu.style.display = plusMenu.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!plusIcon.contains(e.target) && !plusMenu.contains(e.target)) {
+            plusMenu.style.display = 'none';
+        }
+    });
+
+
+    const eventSource = new EventSource(`/admin/chats/${userId}/stream`);
+    eventSource.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+
+        const chatBox = document.getElementById("chat-box");
+        chatBox.innerHTML = "";
+
+        data.forEach(msg => {
+            const div = document.createElement("div");
+            div.className = (msg.user ? "text-start" : "text-end") + " mb-2";
+
+            const inner = document.createElement("div");
+            inner.className = "d-inline-block p-2 rounded";
+            inner.classList.add(msg.user ? "bg-light" : "bg-primary");
+            if (!msg.user) inner.classList.add("text-white");
+            inner.innerText = msg.message;
+
+            div.appendChild(inner);
+            chatBox.appendChild(div);
+        });
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+    };
+</script>
+
+
+
+</body>
+</html>
