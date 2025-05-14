@@ -15,7 +15,7 @@ Onix là một hệ thống web được xây dựng bằng Java, cung cấp gia
 
 ## 🚀 Hướng dẫn cài đặt
 
-### 1. Clone project
+### 0. Clone project
 
 ```bash
 git clone https://github.com/lequochuy05/Onix.git
@@ -30,7 +30,9 @@ git clone https://github.com/lequochuy05/Onix.git
 http://localhost:8080/admin/dashboard
 ```
 ### 5. Tại đây ta có thể thực hiện thao tác với các chức năng như thêm, cập nhật và xóa các thư mục, sản phẩm,.. và xem thống kê doanh thu qua từng tháng
-![image](https://github.com/user-attachments/assets/9d05c27f-8e52-4b98-87fc-6ab49e9b4198)
-### 6. Video hướng dẫn 
+![image](https://github.com/user-attachments/assets/6f8b14b4-0974-4916-94b4-62079c2c9e8c)
+
+##----NGƯỜI DÙNG----##
+
 --------------------------------------
 
