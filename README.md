@@ -10,11 +10,24 @@ Onix là một hệ thống web và ứng dụng được xây dựng để ph�
 - Giao diện: Thymeleaf, HTML/CSS
 - Firebase
 - Build tool: Maven
-- 
-📱 Ứng dụng người dùng:
+  
+📱 Ứng dụng người dùng Android:
 - Ngôn ngữ: Kotlin
+- Giao diện: XML + Jetpack Compose
 - Kiến trúc: MVVM
-- UI Layout: XML
+- Database: Firebase Realtime Database + Cloudinary
+- Xác thực: Firebase Auth (Email, Google)
+- Thanh toán: ZaloPay (sandbox), COD
+- Thư viện chính:
++ Jetpack Navigation, ViewModel, LiveData
++ Glide, Coil (hiển thị ảnh)
++ Retrofit (API)
++ Gson, OkHttp
++ DotsIndicator, Accompanist Pager
++ Firebase Auth, Google Services
+- ConstraintLayout + Compose UI
+- ZaloPay SDK (.aar, .jar)
+
 ----------------------
 
 ## 🚀 Hướng dẫn cài đặt
@@ -37,14 +50,28 @@ http://localhost:8080/admin/dashboard
 ![image](https://github.com/user-attachments/assets/6f8b14b4-0974-4916-94b4-62079c2c9e8c)
 
 👤 Phần người dùng (Ứng dụng di động)
-Ứng dụng dành cho người mua được xây dựng bằng:
-- Kotlin + XML
-- Áp dụng mô hình kiến trúc MVVM
-- Tính năng chính:
-+ Duyệt danh mục, sản phẩm
-+ Tìm kiếm và lọc giày
-+ Thêm vào giỏ hàng
-+ Thanh toán (nếu có tích hợp)
-+ Hiển thị đánh giá và mô tả chi tiết sản phẩm
+🧩 Chức năng chính
+🔐 Xác thực
+- Đăng ký / Đăng nhập bằng Email / Google
+- Thay đổi thông tin cá nhân, mật khẩu
+
+🛍️ Mua sắm
+- Hiển thị danh sách giày theo danh mục
+- Danh mục bán chạy
+- Tìm kiếm theo tên, giá, kích cỡ
+- Xem chi tiết sản phẩm (kích cỡ, mô tả, đánh giá)
+- Giỏ hàng (thêm, xóa, sửa số lượng)
+- Danh sách yêu thích
+- Áp dụng mã giảm giá
+  
+💳 Thanh toán & Đơn hàng
+- Thanh toán bằng ZaloPay, COD
+- Theo dõi đơn hàng đã đặt
+- Lịch sử mua hàng
+
+💬 Hỗ trợ người dùng
+- Trung tâm trợ giúp (quy trình đặt hàng,...)
+- Báo lỗi & góp ý
+- Hỗ trợ trực tuyến (ChatBot)
 --------------------------------------
 
