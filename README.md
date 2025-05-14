@@ -50,7 +50,9 @@ http://localhost:8080/admin/dashboard
 ![image](https://github.com/user-attachments/assets/6f8b14b4-0974-4916-94b4-62079c2c9e8c)
 
 👤 Phần người dùng (Ứng dụng di động)
+
 🧩 Chức năng chính
+
 🔐 Xác thực
 - Đăng ký / Đăng nhập bằng Email / Google
 - Thay đổi thông tin cá nhân, mật khẩu
