@@ -6,7 +6,6 @@ Onix là một hệ thống web và ứng dụng được xây dựng để ph�
 🌐 Backend & Admin Web:
 - Ngôn ngữ: Java
 - Framework: Spring Boot
-- ORM: JPA
 - Giao diện: Thymeleaf, HTML/CSS
 - Firebase
 - Build tool: Maven
